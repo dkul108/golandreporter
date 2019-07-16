@@ -43,6 +43,9 @@ func (g GolandReporter) SpecDidComplete(specSummary *types.SpecSummary) {
 		printResultOutput(specSummary, "PASS")
 	} else if specSummary.HasFailureState() {
 		fmt.Printf("%s\n\n", specSummary.Failure.Message)
+		if specSummary.Failure.ForwardedPanic {
+			fmt.Printf("%s\n\n", specSummary.Failure.ForwardedPanic)
+		}
 		fmt.Printf("%s\n\n", specSummary.Failure.Location.FullStackTrace)
 		printResultOutput(specSummary, "FAIL")
 	} else if specSummary.Skipped() {
