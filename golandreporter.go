@@ -18,11 +18,20 @@ func NewGolandReporter() reporters.Reporter {
 }
 
 func NewAutoGolandReporter() reporters.Reporter {
-	if strings.Contains(os.Getenv("OLDPWD"), "Goland") {
+	isInIntellij := false
+
+	for _, v := range os.Environ() {
+		if strings.Contains(v, "IntelliJ") || strings.Contains(v, "Goland") {
+			isInIntellij = true
+			break
+		}
+	}
+
+	if isInIntellij {
 		return NewGolandReporter()
 	} else {
-		stenographer := stenographer.New(!config.DefaultReporterConfig.NoColor, config.GinkgoConfig.FlakeAttempts > 1, os.Stdout)
-		return reporters.NewDefaultReporter(config.DefaultReporterConfig, stenographer)
+		steno := stenographer.New(!config.DefaultReporterConfig.NoColor, config.GinkgoConfig.FlakeAttempts > 1, os.Stdout)
+		return reporters.NewDefaultReporter(config.DefaultReporterConfig, steno)
 	}
 }
 
